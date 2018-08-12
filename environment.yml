@@ -1,0 +1,6 @@
+name: builder
+dependencies:
+  - python=3.6
+  - pip:
+    - SQLAlchemy==1.2.10
+    - mysql-connector-python==8.0.12
