@@ -34,51 +34,54 @@ class Connection():
         return engine
 
     def execute_sql_from_string(self, raw_sql_string):
-        connection = self.engine.raw_connection()
-        try:
-            cursor = connection.cursor()
-            for result in cursor.execute(raw_sql_string, multi=True):
-                print(f'result: {result}')
-            cursor.close()
-            connection.commit()
-        finally:
-            connection.close()
-        return result
+        if raw_sql_string:
+            connection = self.engine.raw_connection()
+            try:
+                cursor = connection.cursor()
+                for result in cursor.execute(raw_sql_string, multi=True):
+                    print(f'SQL command executed. {result}')
+                cursor.close()
+                connection.commit()
+            finally:
+                connection.close()
+            return result
 
     def execute_sql_from_file(self, filepath):
         with open(filepath, 'r') as sql_file:
             raw_sql_string = sql_file.read()
         result = self.execute_sql_from_string(raw_sql_string)
+        print(f'SQL in file {filepath} executed.')
         return result
     
     def execute_stored_procedure(self, proc_name, proc_arguments_array=None):
         if not proc_arguments_array:
             proc_arguments_array = []
-        connection = self.engine.connect()
-        dbapi_connection = connection.connection
+        connection = self.engine.raw_connection()
         try:
-            cursor = dbapi_connection.cursor()
+            cursor = connection.cursor()
             cursor.callproc(proc_name, proc_arguments_array)
-            result = list(cursor.fetchall())
+            # result = list(cursor.fetchall())
             cursor.close()
             connection.commit()
+            print(f'Stored procedure {proc_name} executed.')
         finally:
             connection.close()
-        return result
+        return None
         
-def build_db(connection_name, credentials_file_location='config.ini', db_settings_file_location='settings.json'):
-    connection = Connection(credentials_file_location=credentials_file_location, connection_name=connection_name)
+def build_db(credentials_file_location='config.ini', db_settings_file_location='settings.json'):
     with open(db_settings_file_location) as f:
         data = json.load(f)
     db_settings = data[0]
+    connection = Connection(credentials_file_location=credentials_file_location, connection_name=db_settings['connection_name'])
+    connection.execute_sql_from_string(db_settings.get('raw_sql_to_execute'))
     for sql_file in db_settings.get('raw_sql_file_locations', []):
         connection.execute_sql_from_file(sql_file)
     for sp_name in db_settings.get('stored_procedure_names', []):
         connection.execute_stored_procedure(sp_name)
-    return f'Database built for connect {connection_name}'
+    return f'Database built for connection {db_settings["connection_name"]}'
 
 if __name__ == '__main__':
-    build_db('vw_reporting_test')
+    build_db()
 
 
 # def get_parser():
