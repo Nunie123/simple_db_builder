@@ -1,0 +1,6 @@
+[
+    {
+        "raw_sql_file_locations": ["path/to/file", "path/to/other/file"],
+        "stored_procedure_names": ["good_procedure", "better_procedure", "best_procedure"]
+    }
+]
