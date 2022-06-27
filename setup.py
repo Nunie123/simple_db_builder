@@ -8,7 +8,7 @@ setup(name='simple_db_builder',
     url='https://github.com/Nunie123/simple_db_builder',
     packages=['simple_db_builder'],
     install_requires=[
-                    'mysql-connector-python==8.0.12',
+                    'mysql-connector-python==8.0.14',
                     'SQLAlchemy==1.2.10'
                     ],
     classifiers=[
