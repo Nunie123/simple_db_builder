@@ -9,7 +9,7 @@ setup(name='simple_db_builder',
     packages=['simple_db_builder'],
     install_requires=[
                     'mysql-connector-python==8.0.12',
-                    'SQLAlchemy==1.2.10'
+                    'SQLAlchemy==1.3.0'
                     ],
     classifiers=[
                 "Programming Language :: Python :: 3",
